@@ -1,0 +1,46 @@
+{extend name="public/add" /}
+{block name="form"}
+<div style="height: 100%;overflow: auto;">
+	{if isset($a)}<input type="hidden" name="id" value="{$a.id}" />{/if}
+	<div class="layui-form-item">
+	  <label class="layui-form-label">用户组名</label>
+	  <div class="layui-input-inline">
+			<input type="text" name="group_name" placeholder="请输入名称" class="layui-input" value="{$a.group_name ?? ''}">
+	  </div>
+	</div>
+	<div class="layui-form-item">
+	  <label class="layui-form-label">选择权限</label>
+	  <div class="layui-input-block" style="margin: 0;">
+			{foreach $qx as $v}
+				<p style="margin-left:{$v.k*20}px;"><input type="checkbox" name="group_roleid[]" data-id="{$v.dataid}" lay-skin="primary" lay-filter="xuan" title="{$v.name}" value="{$v.id}" {if isset($a) && in_array($v.id,explode(',',$a.group_roleid))}checked="checked"{/if} /></p>
+			{/foreach}
+	  </div>
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script>
+	layui.use('form', function(){
+	  var form = layui.form;
+	  form.on('checkbox(xuan)', function(data){
+			var dataid = $(data.elem).data('id').toString();
+			if (data.elem.checked) {
+				$('input[data-id$="-'+dataid+'"]').prop('checked',data.elem.checked);
+				while(dataid.indexOf('-')!=-1){
+					dataid = dataid.substring(dataid.indexOf('-')+1);
+					$('input[data-id="'+dataid+'"]').prop('checked',data.elem.checked);
+				}
+			} else{
+				$('input[data-id$="-'+dataid+'"]').prop('checked',data.elem.checked);
+				while(dataid.indexOf('-')!=-1){
+					dataid = dataid.substring(dataid.indexOf('-')+1);
+					if($('input[data-id$="-'+dataid+'"]:checked').length==0){
+						$('input[data-id="'+dataid+'"]').prop('checked',false);
+					}
+				}
+			}
+			form.render('checkbox');
+	  });
+	});
+</script>
+{/block}

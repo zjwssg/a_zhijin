@@ -1,0 +1,51 @@
+{extend name="public/add" /}
+{block name="form"}
+<div class="content">
+	{if isset($a)}<input type="hidden" name="id" value="{$a.id}" />{/if}
+	<div style="padding: 0 0 10px 30px;margin:0 0 10px 0;font-size: 20px;border-bottom: 1px solid #C9C9C9;">个人资料</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">头像</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<label class="uimg">
+					<input type="file" name="admin_img" />
+					<img {if $a['admin_img']!=""}src="{$a.admin_img}"{/if} />
+			</label>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">账号</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<p class="layui-input" style="line-height: 38px;">{$a.admin_account}</p>
+		</div>
+		<font color="brown">一般用于后台登录</font>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">角色</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<p class="layui-input" style="line-height: 38px;">{$a->group->group_name}</p>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">用户名</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<input type="text" name="admin_name" placeholder="请输入电话" class="layui-input" value="{$a.admin_name}">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">电话</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<input type="text" name="admin_phone" placeholder="请输入电话" class="layui-input" value="{$a.admin_phone}">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">登录时间</label>
+		<div class="layui-input-inline" style="width: 300px;">
+			<p class="layui-input" style="line-height: 38px;">{$a.logintime}</p>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="add"}
+	<button type="button" class="layui-btn layui-btn-sm" onclick="add('{:url('edit')}')">修改</button>
+{/block}
+{block name="qx"}{/block}

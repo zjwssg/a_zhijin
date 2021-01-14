@@ -1,0 +1,19 @@
+<script src="/tinymce/tinymce.min.js" referrerpolicy="origin"></script>
+	
+  <script>
+		tinymce.init({
+		    selector: '.tinymce',
+				// 事件监听
+				setup: function(editor){ 
+						// 内容同步，因为通过ajax提交的不会触发同步
+				    editor.on('change',function(){ editor.save(); });
+				},
+		    language:'zh_CN',
+		    plugins: 'print preview searchreplace autolink directionality fullscreen image link media template code codesample table charmap hr pagebreak nonbreaking anchor insertdatetime advlist lists wordcount textpattern emoticons autosave autoresize',
+				
+		    toolbar: 'undo redo | forecolor backcolor bold italic underline strikethrough | alignleft aligncenter alignright alignjustify outdent indent | preview fullscreen | bullist numlist lineheight | blockquote subscript superscript removeformat',
+				images_upload_url: '',
+				relative_urls : false,
+				remove_script_host : false,
+		});
+	</script>

@@ -1,0 +1,300 @@
+<!DOCTYPE html>
+<html style="height: 100%;">
+	<head>
+		<meta charset="utf-8">
+		<title>{:cache('mrz')['name']}</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=0">
+		<link rel="stylesheet" href="_admin_/layui/css/layui.css" media="all">
+		<link rel="stylesheet" href="_admin_/form.css" media="all">
+		<script src="_admin_/layui/layui.js"></script>
+		<script src="_admin_/jquery.js"></script>
+		{block name="link"}{/block}
+		<style>
+			.layui-form-item{display: flex;align-items: center;}
+			.content{
+				height: 100%;
+				padding: 10px;
+				box-sizing: border-box;
+				overflow-y: auto;
+			}
+			/*一般只需要引用下面的*/
+			.content::-webkit-scrollbar-track-piece {
+				background-color: #C9C9C9;	/*外层轨道颜色	*/
+				border-radius: 5px;
+			}
+			.content::-webkit-scrollbar {
+				width: 6px;	/*滚动条宽度*/
+			}
+			.content::-webkit-scrollbar-thumb {
+				background-color: #2F866E;	/*内层轨道颜色	*/
+				background-clip: padding-box;
+				border-radius: 5px;
+			}
+		</style>
+	</head>
+	<body style="height: 100%;">
+		<form id="form" class="layui-form" style="height: 100%;padding: 20px 20px 50px 20px; box-sizing: border-box;background: #FFFFFF;">
+			
+			<!-- 表单 -->
+			{block name="form"}
+				{if isset($a['id'])}<input type="hidden" name="id" value="{$a.id}" />{/if}
+				{if $lists['type']==""}
+					<div class="content">
+						{foreach $lists['form'] as $index=>$item}
+							{if $item.ftype=='hidden'}<input type="hidden" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}">{/if}
+							{if $item['status']==1 && $item['ftype']!='hidden'}
+							<div class="layui-form-item">
+								<label class="layui-form-label">{$item.cname}</label>
+								<div class="layui-input-inline">
+									{switch name="$item.ftype"}
+										{case value="input"}
+											<input type="text" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}" placeholder="{$item.hint}">
+										{/case}
+										{case value="cater"}
+											{php}
+											 $cater = model('cater')->All()->toArray();
+											{/php}
+											<select name="{$item.ename}" lay-ignore>
+												{foreach $cater as $s=>$cater}
+												<option value="{$cater.id}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$s}selected="selected"{/if}>{$cater.name}</option>
+												{/foreach}
+											</select>
+										{/case}
+										{case value="password"}
+											<input type="password" name="{$item.ename}" value="" placeholder="{$item.hint}">
+										{/case}
+										{case value="number"}
+											<input type="number" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}" placeholder="{$item.hint}">
+										{/case}
+										{case value="select"}
+											{php}
+												$value = explode('|',$item['value']);
+												$select = [];
+												foreach($value as $value){
+													$value = explode('=',$value);
+													$select[$value[0]] = $value[1];
+												}
+											{/php}
+											<select name="{$item.ename}" lay-ignore>
+												{foreach $select as $s=>$select}
+												<option value="{$s}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$s}selected="selected"{/if}>{$select}</option>
+												{/foreach}
+											</select>
+										{/case}
+										{case value="radio"}
+											{php}
+												$value = explode('|',$item['value']);
+												$radio = [];
+												foreach($value as $value){
+													$value = explode('=',$value);
+													$radio[$value[0]] = $value[1];
+												}
+											{/php}
+											{foreach $radio as $r=>$radio}
+											<input type="radio" name="{$item.ename}" value="{$r}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$r}checked{/if}{if !isset($a[$item['ename']])}checked{/if} lay-ignore>{$radio}
+											{/foreach}
+										{/case}
+										{case value="checkbox"}
+											{php}
+												$value = explode('|',$item['value']);
+												$checkbox = [];
+												foreach($value as $value){
+													$value = explode('=',$value);
+													$checkbox[$value[0]] = $value[1];
+												}
+											{/php}
+											{foreach $checkbox as $c=>$checkbox}
+											<input type="checkbox" name="{$item.ename}[]" value="{$c}" {if isset($a[$item['ename']]) && in_array($c,$a[$item['ename']])}checked="checked"{/if} lay-ignore>{$checkbox}
+											{/foreach}
+										{/case}
+										{case value="textarea"}
+											<textarea name="{$item.ename}" placeholder="{$item.hint}" lay-ignore>{$a[$item['ename']] ?? ''}</textarea>
+										{/case}
+										{case value="img"}
+											<label class="uimg">
+												<input type="file" name="{$item.ename}" lay-ignore />
+												<img {if isset($a[$item['ename']]) && $a[$item['ename']]!=""}src="_img_/{$a[$item['ename']]}"{/if} />
+											</label>
+										{/case}
+										{case value="tinymce"}
+											<div style="width: 700px;">
+												<textarea name="{$item.ename}" class="tinymce" lay-ignore>{$a[$item['ename']] ?? ''}</textarea>
+											</div>
+										{/case}
+									{/switch}
+									<p style="color:brown">{$item.note}</p>
+								</div>
+							</div>
+							{/if}
+						{/foreach}
+					</div>
+				{else/}
+					<div class="layui-tab layui-tab-brief" style="height: 100%;margin: 0;">
+						{php}
+							$type = explode('|',$lists['type']);
+						{/php}
+						<ul class="layui-tab-title">
+							{foreach $type as $i=>$v}
+							<li class="{if $i==0}layui-this{/if}">{$v}</li>
+							{/foreach}
+						</ul>
+						<div class="layui-tab-content content" style="height: 88%;overflow: auto;box-sizing: border-box;">
+							{foreach $type as $i=>$v}
+							<div class="layui-tab-item {if $i==0}layui-show{/if}">
+								{foreach $lists['form'] as $index=>$item}
+									{if $item.ftype=='hidden'}<input type="hidden" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}">{/if}
+									{if $item['type']==$v && $item['status']==1 && $item['ftype']!='hidden'}
+									<div class="layui-form-item">
+										<label class="layui-form-label">{$item.cname}</label>
+										<div class="layui-input-inline">
+											{switch name="$item.ftype"}
+												{case value="input"}
+													<input type="text" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}" placeholder="{$item.hint}">
+												{/case}
+												{case value="cater"}
+													{php}
+													 $cater = model('cater')->All()->toArray();
+													{/php}
+													<select name="{$item.ename}" lay-ignore>
+														{foreach $cater as $s=>$cater}
+														<option value="{$cater.id}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$s}selected="selected"{/if}>{$cater.name}</option>
+														{/foreach}
+													</select>
+												{/case}
+												{case value="password"}
+													<input type="password" name="{$item.ename}" value="" placeholder="{$item.hint}">
+												{/case}
+												{case value="number"}
+													<input type="number" name="{$item.ename}" value="{$a[$item['ename']] ?? ''}" placeholder="{$item.hint}">
+												{/case}
+												{case value="select"}
+													{php}
+														$value = explode('|',$item['value']);
+														$select = [];
+														foreach($value as $value){
+															$value = explode('=',$value);
+															$select[$value[0]] = $value[1];
+														}
+													{/php}
+													<select name="{$item.ename}" lay-ignore>
+														{foreach $select as $s=>$select}
+														<option value="{$s}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$s}selected="selected"{/if}>{$select}</option>
+														{/foreach}
+													</select>
+												{/case}
+												{case value="radio"}
+													{php}
+														$value = explode('|',$item['value']);
+														$radio = [];
+														foreach($value as $value){
+															$value = explode('=',$value);
+															$radio[$value[0]] = $value[1];
+														}
+													{/php}
+													{foreach $radio as $r=>$radio}
+													<input type="radio" name="{$item.ename}" value="{$r}" {if isset($a[$item['ename']]) && $a[$item['ename']]==$r}checked{/if}{if !isset($a[$item['ename']])}checked{/if} lay-ignore>{$radio}
+													{/foreach}
+												{/case}
+												{case value="checkbox"}
+													{php}
+														$value = explode('|',$item['value']);
+														$checkbox = [];
+														foreach($value as $value){
+															$value = explode('=',$value);
+															$checkbox[$value[0]] = $value[1];
+														}
+													{/php}
+													{foreach $checkbox as $c=>$checkbox}
+													<input type="checkbox" name="{$item.ename}[]" value="{$c}" {if isset($a[$item['ename']]) && in_array($c,$a[$item['ename']])}checked{/if} lay-ignore>{$checkbox}
+													{/foreach}
+												{/case}
+												{case value="textarea"}
+													<textarea name="{$item.ename}" placeholder="{$item.hint}" lay-ignore>{$a[$item['ename']] ?? ''}</textarea>
+												{/case}
+												{case value="img"}
+													<label class="uimg">
+														<input type="file" name="{$item.ename}" lay-ignore />
+														<img {if isset($a[$item['ename']]) && $a[$item['ename']]!=""}src="_img_/{$a[$item['ename']]}"{/if} />
+													</label>
+												{/case}
+												{case value="tinymce"}
+													<div style="width: 700px;">
+														<textarea name="{$item.ename}" class="tinymce" lay-ignore>{$a[$item['ename']] ?? ''}</textarea>
+													</div>
+												{/case}
+											{/switch}
+										</div>
+										<font color="brown">{$item.note}</font>
+									</div>
+									{/if}
+								{/foreach}
+							</div>
+							{/foreach}
+						</div>
+					</div>
+				{/if}
+			{/block}
+		</form>
+		<!-- 按钮 -->
+		<div style="position: fixed;bottom: 10px;right: 20px;">
+			{block name="add"}
+			{if isset($a)}
+					<button type="button" class="layui-btn layui-btn-sm" onclick="add('{:url('edit')}')">修改</button>
+			{else/}
+					<button type="button" class="layui-btn layui-btn-sm" onclick="add('{:url('add')}')">添加</button>
+			{/if}
+			{/block}
+			{block name="qx"}<button type="button" class="layui-btn layui-btn-primary layui-btn-sm" onclick="qx()">取消</button>{/block}
+		</div>
+		{block name="js"}{/block}
+		<script>
+			// 取消按钮
+			function qx(){
+				//关闭当前层
+				var index = parent.layer.getFrameIndex(window.name); 
+				parent.layer.close(index);
+			}
+			// 添加和修改
+			function add(url){
+				var myForm = document.getElementById('form');
+				var da=new FormData(myForm);
+				$.ajax({
+				    type: 'POST',
+				    url: url,
+				    data: da,
+				    cache: false,
+				    processData: false, // 不处理数据
+				    contentType: false, // 不设置内容类型
+				    success: function (e) {
+				    	if (e.code==1) {
+				    		layer.msg(e.msg,{time:1000},function(){
+									//关闭当前层
+									var index = parent.layer.getFrameIndex(window.name); 
+									parent.layer.close(index);
+									//刷新父层
+									window.parent.location.reload();
+								})
+				    	} else{
+				    		layer.msg(e.msg,{time:1000});
+				    	}
+				    }
+				});
+			}
+			// 渲染表单
+			layui.use(['form','element'], function(){
+			  var form = layui.form
+				  ,$ = layui.jquery
+				  ,element = layui.element;
+			});
+			// 上传图片
+			 $('.uimg input[type="file"]').change(function(){
+			     var file = $(this).val();
+			     var src = window.URL.createObjectURL(this.files[0]);
+			     $(this).next().attr('src', src);
+			 })
+		</script>
+		{include file="public/tinymce"/}
+	</body>
+</html>

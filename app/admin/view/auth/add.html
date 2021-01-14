@@ -1,0 +1,197 @@
+{extend name="public/add" /}
+{block name="link"}
+<style>
+	.layui-form-label{
+		width: 120px;
+	}
+</style>
+{/block}
+{block name="form"}
+<div class="content">
+	{if isset($a)}<input type="hidden" name="id" value="{$a.id}" />{/if}
+	<div class="layui-form-item">
+		<label class="layui-form-label">栏目名称</label>
+		<div class="layui-input-inline">
+			<input type="text" name="name" value="{$a.name ?? ''}" placeholder="请输入名称">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">网页地址</label>
+		<div class="layui-input-inline">
+			<input type="text" name="address" value="{$a.address ?? ''}" placeholder="请输入地址">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">父级栏目</label>
+		<div class="layui-input-inline">
+			<select name="fid" lay-ignore>
+				<option value="0">顶级栏目</option>
+				{foreach $lists as $v}
+				<option value="{$v.id}" {if isset($a) && $v.id==$a.fid}selected{/if}>{:str_repeat('——',$v['k'])}{$v.name}</option>
+				{/foreach}
+			</select>
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">图标</label>
+		<div class="layui-input-inline">
+			<input type="text" name="icon" value="{$a.icon ?? ''}" placeholder="请输入图标名称">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">状态</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="status" value="1" {if isset($a) && $a['status']==1}checked{else/}checked{/if} lay-ignore>显示
+			<input type="radio" name="status" value="0" {if isset($a) && $a['status']==0}checked{/if} lay-ignore>隐藏
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">是否检测</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="auth" value="1" {if isset($a) && $a['auth']==1}checked{else/}checked{/if} lay-ignore>是
+			<input type="radio" name="auth" value="0" {if isset($a) && $a['auth']==0}checked{/if} lay-ignore>否
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">是否可以批量操作</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="is_batch" value="1" {if isset($a) && $a['is_batch']==1}checked{else/}checked{/if} lay-ignore>是
+			<input type="radio" name="is_batch" value="0" {if isset($a) && $a['is_batch']==0}checked{/if} lay-ignore>否
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">是否显示添加按钮</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="is_add" value="1" {if isset($a) && $a['is_add']==1}checked{else/}checked{/if} lay-ignore>是
+			<input type="radio" name="is_add" value="0" {if isset($a) && $a['is_add']==0}checked{/if} lay-ignore>否
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">是否显示修改按钮</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="is_edit" value="1" {if isset($a) && $a['is_edit']==1}checked{else/}checked{/if} lay-ignore>是
+			<input type="radio" name="is_edit" value="0" {if isset($a) && $a['is_edit']==0}checked{/if} lay-ignore>否
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">是否显示删除按钮</label>
+		<div class="layui-input-inline" style="padding: 9px 0;display: flex;align-items: center;">
+			<input type="radio" name="is_del" value="1" {if isset($a) && $a['is_del']==1}checked{else/}checked{/if} lay-ignore>是
+			<input type="radio" name="is_del" value="0" {if isset($a) && $a['is_del']==0}checked{/if} lay-ignore>否
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">表单选项卡</label>
+		<div class="layui-input-inline">
+			<input type="text" name="type" value="{$a.type ?? ''}" placeholder="选项卡名称用|隔开">
+		</div>
+	</div>
+	<div class="layui-form-item">
+		<label class="layui-form-label">所属表单</label>
+		<div class="layui-input-inline">
+			<select name="formid" lay-ignore>
+				<option value="0">自身</option>
+				{foreach $lists as $v}
+				<option value="{$v.id}" {if isset($a) && $v.id==$a.formid}selected{/if}>{:str_repeat('——',$v['k'])}{$v.name}</option>
+				{/foreach}
+			</select>
+		</div>
+		<font color="brown">所属表单和表单项只需要一个</font>
+	</div>
+	<div style="text-align: center;margin-bottom: 10px;font-size: 20px;">
+		表单项<a class="layui-btn layui-btn-xs" onclick="tianjia()"><i class="layui-icon">&#xe624;</i></a>
+	</div>
+	<div style="font-size: 12px;text-align: center;">
+		<font color="red">1:</font>cname中文名称
+		<font color="red">2:</font>ename英文名称
+		<font color="red">3:</font>type所属选项卡
+		<font color="red">4:</font>ftype表单类型
+		<font color="red">5:</font>value可选值
+		<font color="red">6:</font>hint提示
+		<font color="red">7:</font>note备注
+		<font color="red">8:</font>is_display是否显示到列表1.是0.否
+		<font color="red">9:</font>is_sort是否是排序按钮1.是0.否
+		<font color="red">10:</font>is_status是否是状态按钮1.是0.否
+		<font color="red">11:</font>is_img是否是图片1.是0.否
+		<font color="red">12:</font>status状态1.显示0.隐藏
+		<font color="red">13:</font>sort排序
+	</div>
+	<div class="is_form">
+		{if isset($a) && $a['form']!=""}
+			{foreach $a['form'] as $v}
+				<div style="display: flex;flex-wrap: wrap;justify-content: space-between;align-items: center;">
+					<div style="width:10%"><input type="text" name="form[cname][]" value="{$v.cname ?? ''}" placeholder="cname"></div>
+					<div style="width:10%"><input type="text" name="form[ename][]" value="{$v.ename ?? ''}" placeholder="ename"></div>
+					<div style="width:10%"><input type="text" name="form[type][]" value="{$v.type ?? ''}" placeholder="type"></div>
+					<div style="width:10%">
+						<select name="form[ftype][]" lay-ignore>
+							<option value="input" {if $v['ftype']=='input'}selected{/if}>input</option>
+							<option value="cater" {if $v['ftype']=='cater'}selected{/if}>餐饮种类</option>
+							<option value="password" {if $v['ftype']=='password'}selected{/if}>password</option>
+							<option value="hidden" {if $v['ftype']=='hidden'}selected{/if}>hidden</option>
+							<option value="number" {if $v['ftype']=='number'}selected{/if}>number</option>
+							<option value="select" {if $v['ftype']=='select'}selected{/if}>select</option>
+							<option value="radio" {if $v['ftype']=='radio'}selected{/if}>radio</option>
+							<option value="checkbox" {if $v['ftype']=='checkbox'}selected{/if}>checkbox</option>
+							<option value="textarea" {if $v['ftype']=='textarea'}selected{/if}>textarea</option>
+							<option value="img" {if $v['ftype']=='img'}selected{/if}>img</option>
+							<option value="tinymce" {if $v['ftype']=='tinymce'}selected{/if}>tinymce</option>
+						</select>
+					</div>
+					<div style="width:15%"><input type="text" name="form[value][]" value="{$v.value ?? ''}" placeholder="value"></div>
+					<div style="width:10%"><input type="text" name="form[hint][]" value="{$v.hint ?? ''}" placeholder="hint"></div>
+					<div style="width:10%"><input type="text" name="form[note][]" value="{$v.note ?? ''}" placeholder="note"></div>
+					<div style="width:3%"><input type="text" name="form[is_display][]" value="{$v.is_display ?? 1}" placeholder="is_display"></div>
+					<div style="width:3%"><input type="text" name="form[is_sort][]" value="{$v.is_sort ?? 0}" placeholder="is_sort"></div>
+					<div style="width:3%"><input type="text" name="form[is_status][]" value="{$v.is_status ?? 0}" placeholder="is_status"></div>
+					<div style="width:3%"><input type="text" name="form[is_img][]" value="{$v.is_img ?? 0}" placeholder="is_img"></div>
+					<div style="width:3%"><input type="text" name="form[status][]" value="{$v.status ?? 1}" placeholder="status"></div>
+					<div style="width:5%"><input type="text" name="form[sort][]" value="{$v.sort ?? 50}" placeholder="sort"></div>
+					<a class="layui-btn layui-btn-xs layui-btn-danger" onclick="shanchu(this)"><i class="layui-icon">&#xe640;</i></a>
+				</div>
+			{/foreach}
+		{/if}
+	</div>
+</div>
+{/block}
+{block name="js"}
+<script>
+	function tianjia(){
+		$('.is_form').append(`
+			<div style="display: flex;flex-wrap: wrap;justify-content: space-between;align-items: center;">
+				<div style="width:10%"><input type="text" name="form[cname][]" placeholder="cname"></div>
+				<div style="width:10%"><input type="text" name="form[ename][]" placeholder="ename"></div>
+				<div style="width:10%"><input type="text" name="form[type][]" placeholder="type"></div>
+				<div style="width:10%">
+					<select name="form[ftype][]" lay-ignore>
+						<option value="input">input</option>
+						<option value="cater">餐饮种类</option>
+						<option value="password">password</option>
+						<option value="hidden">hidden</option>
+						<option value="number">number</option>
+						<option value="select">select</option>
+						<option value="radio">radio</option>
+						<option value="checkbox">checkbox</option>
+						<option value="textarea">textarea</option>
+						<option value="img">img</option>
+						<option value="tinymce">tinymce</option>
+					</select>
+				</div>
+				<div style="width:15%"><input type="text" name="form[value][]" placeholder="value"></div>
+				<div style="width:10%"><input type="text" name="form[hint][]" placeholder="hint"></div>
+				<div style="width:10%"><input type="text" name="form[note][]" placeholder="note"></div>
+				<div style="width:3%"><input type="text" name="form[is_display][]" value="1" placeholder="is_display"></div>
+				<div style="width:3%"><input type="text" name="form[is_sort][]" value="0" placeholder="is_sort"></div>
+				<div style="width:3%"><input type="text" name="form[is_status][]" value="0" placeholder="is_status"></div>
+				<div style="width:3%"><input type="text" name="form[is_img][]" value="0" placeholder="is_img"></div>
+				<div style="width:3%"><input type="text" name="form[status][]" value="1" placeholder="status"></div>
+				<div style="width:5%"><input type="text" name="form[sort][]" value="50" placeholder="sort"></div>
+				<a class="layui-btn layui-btn-xs layui-btn-danger" onclick="shanchu(this)"><i class="layui-icon">&#xe640;</i></a>
+			</div>
+		`);
+	}
+	function shanchu(is){
+		$(is).parent().remove();
+	}
+</script>
+{/block}

@@ -1,0 +1,112 @@
+{extend name="public/lists" /}
+{block name="add"}
+	<div class="layui-card-header">
+		<a class="layui-btn layui-btn-sm" onclick="add('添加','900px','520px','{:url('add')}')"><i class="layui-icon">&#xe624;</i></a>
+	</div>
+{/block}
+{block name="table"}
+	<table class="layui-table">
+		<thead>
+			<tr>
+				<th width="10">id</th>
+				<th width="100">栏目名称</th>
+				<th width="100">控/方</th>
+				<th width="10">是否检测</th>
+				<th width="10">状态</th>
+				<th width="10"><a class="layui-btn layui-btn-warm layui-btn-sm" onclick="sort()">排序</a></th>
+				<th width="10">操作</th>
+			</tr>
+		</thead>
+		<tbody class="x-cate">
+			{foreach $a as $a}
+				<tr cate-id='{$a.id}' fid='{$a.fid}'>
+					<td>{$a.id}</td>
+					<td style="text-align: left;">
+						<span style="display: inline-block;width: {$a.k*10}px;"></span>
+						{if in_array($a['id'],$fid)}
+						<span style="display: inline-block;width: 20px;"><i class="layui-icon x-show" status='true' style="font-weight: bold;">&#xe624;</i></span>
+						{else/}
+						<span style="display: inline-block;width: 20px;"></span>
+						{/if}
+						{$a.name}
+					</td>
+					<td>{$a.address}</td>
+					<td>
+						{if condition="$a.auth==1"}
+							<a class="layui-btn layui-btn-xs" onclick="auth('{$a.id}',0,this)">检测</a>
+						{else/}
+							<a class="layui-btn layui-btn-danger layui-btn-xs" onclick="auth('{$a.id}',1,this)">不检测</a>
+						{/if}
+					</td>
+					<td>
+						{if condition="$a.status==1"}
+							<a class="layui-btn layui-btn-xs layui-btn-normal" onclick="status('{$a.id}',0,this)">显示</a>
+						{else/}
+							<a class="layui-btn layui-btn-primary layui-btn-xs" onclick="status('{$a.id}',1,this)">隐藏</a>
+						{/if}
+					</td>
+					<td><input type="text" name="sort[{$a.id}]" class="layui-input" value="{$a.sort}" style="width: 50px; height: 25px; text-align: center; padding: 0; display: inline-block;"></td>
+					<td>
+						<div class="layui-btn-group">
+							<a class="layui-btn layui-btn-xs layui-btn-warm" onclick="add('修改','900px','500px','{:url('edit',['id'=>$a.id])}')"><i class="layui-icon">&#xe642;</i></a>
+							<a class="layui-btn layui-btn-xs layui-btn-danger" onclick="del('{$a.id}')"><i class="layui-icon">&#xe640;</i></a>
+						</div>
+					</td>
+				</tr>
+			{/foreach}
+		</tbody>
+	</table>
+{/block}
+{block name="js"}
+	<script>
+		
+		// 是否开启权限检测
+		function auth(id,a,is){
+			$.post("{:url('admin/auth/auth')}",{id:id,status:a},function(e){
+				if (e.code==1) {
+					layer.msg(e.msg,{time:1000},function(){
+						if (e.data==1) {
+							$(is).parent().html('<a class="layui-btn layui-btn-xs" onclick="auth('+id+',0,this)">检测</a>');
+						} else{
+							$(is).parent().html('<a class="layui-btn layui-btn-danger layui-btn-xs" onclick="auth('+id+',1,this)">不检测</a>');
+						}
+					})
+				} else{
+					layer.msg(e.msg,{time:1000});
+				}
+			})
+		}
+	</script>
+	<!-- 分类展开收起的分类的逻辑 -->
+	<script>
+		$(function() {
+			var cateIds = [];
+			$("tbody.x-cate tr[fid!='0']").hide();
+			// 栏目多级显示效果
+			$('.x-show').click(function() {
+				if ($(this).attr('status') == 'true') {
+					$(this).html('&#xe67e;');
+					$(this).attr('status', 'false');
+					cateId = $(this).parents('tr').attr('cate-id');
+					$("tbody tr[fid=" + cateId + "]").show();
+				} else {
+					cateIds = [];
+					$(this).html('&#xe624;');
+					$(this).attr('status', 'true');
+					cateId = $(this).parents('tr').attr('cate-id');
+					getCateId(cateId);
+					for (var i in cateIds) {
+						$("tbody tr[cate-id=" + cateIds[i] + "]").hide().find('.x-show').html('&#xe624;').attr('status', 'true');
+					}
+				}
+			})
+			function getCateId(cateId) {
+				$("tbody tr[fid=" + cateId + "]").each(function(index, el) {
+					id = $(el).attr('cate-id');
+					cateIds.push(id);
+					getCateId(id);
+				});
+			}
+		})
+	</script>
+{/block}

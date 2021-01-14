@@ -1,0 +1,116 @@
+{extend name="public/base" /}
+{block name="body"}
+	<body class="layui-layout-body">
+	  <div id="LAY_app">
+	    <div class="layui-layout layui-layout-admin">
+	      <div class="layui-header">
+	        <!-- 头部区域 -->
+	        <ul class="layui-nav layui-layout-left">
+	          <li class="layui-nav-item layadmin-flexible" lay-unselect>
+	            <a layadmin-event="flexible" title="侧边伸缩"><i class="layui-icon layui-icon-shrink-right" id="LAY_app_flexible"></i></a>
+	          </li>
+	          <li class="layui-nav-item" lay-unselect>
+	            <a title="刷新" onclick="location.reload()"><i class="layui-icon layui-icon-refresh-3"></i></a>
+	          </li>
+	        </ul>
+	        <ul class="layui-nav layui-layout-right" lay-filter="layadmin-layout-right" style="margin-right: 15px;">
+						<li class="layui-nav-item layui-hide-xs" lay-unselect>
+						  <a onclick="qc()">清除缓存</a>
+						</li>
+	          <li class="layui-nav-item layui-hide-xs" lay-unselect>
+	            <a layadmin-event="fullscreen"><i class="layui-icon layui-icon-screen-full"></i></a>
+	          </li>
+	          <li class="layui-nav-item" lay-unselect>
+	            <a><cite>{:session('admin.admin_name')}</cite></a>
+	            <dl class="layui-nav-child">
+	              <dd><a lay-href="{:url('gly/mm')}">修改密码</a></dd>
+	              <hr>
+	              <dd><a onclick="ttc()">退出</a></dd>
+	            </dl>
+	          </li>
+	        </ul>
+	      </div>
+	      <!-- 侧边菜单 -->
+	      <div class="layui-side layui-side-menu">
+	        <div class="layui-side-scroll">
+	          <div class="layui-logo" lay-href="{:url('admin/index/console')}">
+	            <span>{:cache('mrz')['name']}</span>
+	          </div>
+	          <ul class="layui-nav layui-nav-tree" lay-shrink="all" id="LAY-system-side-menu" lay-filter="layadmin-system-side-menu">
+	            {foreach $index as $v}
+							{if count($v.items)==0}
+							<li data-name="get" class="layui-nav-item">
+								<a lay-href="{:url($v.address)}" lay-tips="{$v.name}" lay-direction="2">
+									<i class="layui-icon {$v.icon}"></i>
+									<cite>{$v.name}</cite>
+								</a>
+							</li>
+							{else/}
+							<li data-name="component" class="layui-nav-item">
+							  <a lay-tips="{$v.name}" lay-direction="2">
+							    <i class="layui-icon {$v.icon}"></i>
+							    <cite>{$v.name}</cite>
+							  </a>
+							  <dl class="layui-nav-child">
+									{foreach $v['items'] as $vv}
+									<dd data-name="button">
+									  <a lay-href="{:url($vv.address)}">{$vv.name}</a>
+									</dd>
+									{/foreach}
+							  </dl>
+							</li>
+							{/if}
+							{/foreach}
+	          </ul>
+	        </div>
+	      </div>
+	      <!-- 页面标签 -->
+	      <div class="layadmin-pagetabs" id="LAY_app_tabs">
+	        <div class="layui-icon layadmin-tabs-control layui-icon-prev" layadmin-event="leftPage"></div>
+	        <div class="layui-icon layadmin-tabs-control layui-icon-next" layadmin-event="rightPage"></div>
+	        <div class="layui-icon layadmin-tabs-control layui-icon-down">
+	          <ul class="layui-nav layadmin-tabs-select" lay-filter="layadmin-pagetabs-nav">
+	            <li class="layui-nav-item" lay-unselect>
+	              <a></a>
+	              <dl class="layui-nav-child layui-anim-fadein">
+	                <dd layadmin-event="closeThisTabs"><a>关闭当前标签页</a></dd>
+	                <dd layadmin-event="closeOtherTabs"><a>关闭其它标签页</a></dd>
+	                <dd layadmin-event="closeAllTabs"><a>关闭全部标签页</a></dd>
+	              </dl>
+	            </li>
+	          </ul>
+	        </div>
+	        <div class="layui-tab" lay-unauto lay-allowClose="true" lay-filter="layadmin-layout-tabs">
+	          <ul class="layui-tab-title" id="LAY_app_tabsheader">
+	            <li lay-id="{:url('admin/index/console')}" lay-attr="{:url('admin/index/console')}" class="layui-this"><i class="layui-icon layui-icon-home"></i></li>
+	          </ul>
+	        </div>
+	      </div>
+	      
+	      
+	      <!-- 主体内容 -->
+	      <div class="layui-body" id="LAY_app_body">
+	        <div class="layadmin-tabsbody-item layui-show">
+	          <iframe src="{:url('admin/index/console')}" frameborder="0" class="layadmin-iframe"></iframe>
+	        </div>
+	      </div>
+	      <!-- 辅助元素，一般用于移动设备下遮罩 -->
+	      <div class="layadmin-body-shade" layadmin-event="shade"></div>
+	    </div>
+	  </div>
+	</body>
+	<script>
+		function ttc(){
+			$.get("{:url('admin/login/del')}",function(e){
+				layer.msg(e.msg,{time:1000},function(){
+					location.reload();
+				})
+			})
+		}
+		function qc(){
+			$.get("{:url('base/qc')}",function(e){
+				layer.msg(e.msg,{time:1000})
+			})
+		}
+	</script>
+{/block}

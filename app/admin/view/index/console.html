@@ -1,0 +1,30 @@
+{extend name="public/base" /}
+{block name="body"}
+<body>
+	<div class="layui-fluid">
+		<div class="layui-col-sm12">
+			<div class="layui-card">
+				<div class="layui-card-body ">
+					<blockquote class="layui-elem-quote">欢迎管理员：
+						<span class="x-red">{:session('admin.admin_name')}</span>！登录时间:{:session('admin.logintime')}
+					</blockquote>
+				</div>
+			</div>
+			<div class="layui-card">
+				<div class="layui-card-header">开发团队</div>
+				<div class="layui-card-body ">
+					<table class="layui-table">
+						<tbody>
+							<tr>
+								<th>开发者</th>
+								<td>刘美琪(2480984971@qq.com)</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+		</div>
+	</div>
+	</div>
+</body>
+{/block}
