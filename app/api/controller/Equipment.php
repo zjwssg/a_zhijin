@@ -17,17 +17,18 @@ class Equipment extends Controller
           'method' => 'POST', 
           'header' => array(
 
-          	'token:' . $token,
-          	 'chan:'.'bee-CECBNR',
+          	"token:" . $token,
+          	 "chan:bee-CECBNR",
           	 "Content-type: application/x-www-form-urlencoded",
-          	), 
+          	),
           'content' => $postdata, 
           'timeout' => 15 * 60, // 超时时间（单位:s）
         ) 
       );
       $context = stream_context_create($options); 
-
+	  //halt($url);
       $result = file_get_contents($url, false, $context); 
+
       //echo $result; 
       return $result; 
     }
@@ -38,13 +39,14 @@ class Equipment extends Controller
     //文档3.3.01接口指令下发		POST
     public function directive_issue(){
     	//接受app post传过来的参数
-    	$data = input();
+    	$data =  '{"cmd": 1000, "data": {"digital": 1, "msg": "run"}, "sn": "ookkma", "nonceStr": "123456"}';
+    	//$data = input('post.');
     	//处理
     	$post_data = array( 'data' => $data );
     	//halt($post_data);
     	//halt(http_build_query($post_data));
     	//调用Common.php函数
-    	$res = $this->send_post('http://mqtt.ibeelink.com/api/ext/tissue/pub-cmd', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post("https://en-iot.ibeelink.com/api/ext/tissue/pub-cmd", $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //文档3.3.02	获取指令执行结果		GET
@@ -54,7 +56,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/cmd', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/cmd', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //文档3.3.03	获取设备数据		GET
@@ -71,7 +73,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/data//', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/data//', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.04 获取设备信息接口		GET
@@ -83,7 +85,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/device/info', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/device/info', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.05 获取设备IMEI	GET
@@ -95,7 +97,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/device/imei', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/device/imei', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.06 获取附近设备接口		GET
@@ -109,7 +111,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/vicinity/list', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/vicinity/list', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.07 获取设备通信TOPIC //发布消息的目的地	GET
@@ -121,7 +123,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/sn-exchange/topic', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/sn-exchange/topic', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.08 获取批量设备信息接口 //发布消息的目的地	GET
@@ -133,7 +135,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/devices/info', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/devices/info', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.09 品牌商获取监听项列表		GET
@@ -144,7 +146,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/data/list', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/data/list', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.10 品牌设置监听回调		POST
@@ -157,7 +159,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/add/rule', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/add/rule', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.11 品牌获取已经配置的监听项 		GET
@@ -168,7 +170,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/rule/list', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('https://mqtt.ibeelink.com/api/ext/tissue/monitor/rule/list', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
     //3.3.12 数据监听回调说明		POST
@@ -181,7 +183,7 @@ class Equipment extends Controller
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_post('http://自己设置的回调地址', $post_data, md5($data['data'].'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_post('http://自己设置的回调地址', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
 }
