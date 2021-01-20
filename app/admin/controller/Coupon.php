@@ -20,10 +20,10 @@ class Coupon extends Base
     }
     /*
 	 *添加
-	 */
+	*/
     public function add(){
         $model = model($this->controller);
-//        var_dump($this->controller);die;
+        //        var_dump($this->controller);die;
         if(request()->isPost()){
             $data=input('post.');
             $controller = request()->controller();

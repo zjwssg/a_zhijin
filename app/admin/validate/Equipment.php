@@ -8,6 +8,7 @@ class Equipment extends Validate
   			'e_nums'  => 'require|number',
   			'e_amount'  => 'require|number',
   			'e_uaccount'  => 'require',
+        
     ];
     
     protected $message  =   [

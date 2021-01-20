@@ -25,7 +25,7 @@ class Auth extends Base
 			
 			// 表单项
 			if(isset($data['form'])){
-				count($data['form']['ename']) != count(array_unique($data['form']['ename'])) && $this->error('表单项的英文名称不可重复');
+				//count($data['form']['ename']) != count(array_unique($data['form']['ename'])) && $this->error('表单项的英文名称不可重复');
 				$form = [];
 				foreach($data['form']['cname'] as $i=>$v){
 					$form[$i]['cname'] = $data['form']['cname'][$i];
@@ -69,7 +69,7 @@ class Auth extends Base
 			$data['fid'] == $data['id'] && $this->error('自身不能为上级栏目');
 			// 表单项
 			if(isset($data['form'])){
-				count($data['form']['ename']) != count(array_unique($data['form']['ename'])) && $this->error('表单项的英文名称不可重复');
+				//count($data['form']['ename']) != count(array_unique($data['form']['ename'])) && $this->error('表单项的英文名称不可重复');
 				$form = [];
 				foreach($data['form']['cname'] as $i=>$v){
 					$form[$i]['cname'] = $data['form']['cname'][$i];
@@ -94,6 +94,7 @@ class Auth extends Base
 			}else{
 				$this->error('修改失败');
 			}
+
 		}
 		// 渲染
 		$a=model('auth')->where(['id'=>input('id')])->find()->toArray();

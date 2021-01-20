@@ -1,5 +1,6 @@
 <?php
 namespace app\admin\controller;
+use app\api\controller\Equipment as e;
 class Equipment extends Base
 {
 		/*
@@ -74,5 +75,14 @@ class Equipment extends Base
 		// 获取列表
 		$lists = $this->formlist();
 		return view('public/add',['a'=>$a,'lists'=>$lists]);
+	}
+	public function lists(){
+		// $Equipment = new e();
+		// $data = '{"sn": "ookkma", "nonceStr": "123456"}';
+		// $res = $Equipment->facility_message($data);
+		// //halt($res);
+		$a = model('equipment')->paginate(10);
+		$lists = $this->formlist();
+        return view('public/lists',['a'=>$a,'lists'=>$lists]);
 	}
 }

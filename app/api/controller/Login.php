@@ -4,6 +4,7 @@ use \think\Controller;
 use \think\Request;
 use \think\Route;
 use \think\Db;
+use sms\rong\Rest;
 class Login extends Controller
 {
 	protected function _initialize(){
@@ -114,10 +115,6 @@ class Login extends Controller
         $AppSecret = '';//开发平台也有
         $Redirect_uri = '';//回调地址
         $scope = 'snsapi_login';//这里不用动如果是微信登录
-
-
-
-
         !input('phone') && die(json_encode(['code'=>0,'msg'=>'请输入手机号'],320));
 		return json_encode(yzm(input('phone')),320);
 	}
