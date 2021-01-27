@@ -169,7 +169,9 @@ class Base extends Controller
 		 * 获取表单列表
 		 */
 		public function formlist(){
+
 			$lists = model('auth')->where(['address'=>$this->controller.'/'.$this->action])->field('is_batch,is_add,is_edit,is_del,type,form,formid,width,height')->find()->toArray();
+			//halt($lists);
 			if($lists['formid']!=0){
 				$form = model('auth')->where(['id'=>$lists['formid']])->field('type,form')->find()->toArray();
 				$lists['form'] = $form['form'];

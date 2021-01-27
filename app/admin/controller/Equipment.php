@@ -1,6 +1,7 @@
 <?php
 namespace app\admin\controller;
 use app\api\controller\Equipment as e;
+use think\Db;
 class Equipment extends Base
 {
 		/*
@@ -11,6 +12,7 @@ class Equipment extends Base
 	 */
 	public function add(){
 		$model = model($this->controller);
+
 		if(request()->isPost()){
 			$data=input('post.');
 			$controller = request()->controller();
@@ -37,6 +39,7 @@ class Equipment extends Base
 		}
 		// 渲染
 		// 获取列表
+		
 		$lists = $this->formlist();
 		return view('public/add',['lists'=>$lists]);
 	}
@@ -80,9 +83,39 @@ class Equipment extends Base
 		// $Equipment = new e();
 		// $data = '{"sn": "ookkma", "nonceStr": "123456"}';
 		// $res = $Equipment->facility_message($data);
-		// //halt($res);
+		$Equipment = new e();
+		$date = time();
+		$sn = [];
+		$state = Db::table('equipment')->field('e_sn')->select();
+		
+		foreach ($state as $value) {
+			foreach ($value as $v) {
+				$sn[] = $v;
+			}
+		}
+		$data = [
+			"snList" => $sn,
+			"nonceStr" => $date
+		];
+		$data = json_encode($data);
+		//halt($data);
+		$res = $Equipment->facility_message_ports($data);
+		$res = json_decode($res,true);
+		//halt(count($res['data']));
+		if(count($res['data']) == 1){
+			Db::table('equipment')->where('e_sn',$res['data'][0]['sn'])->update(['e_statet'=>$res['data'][0]['online'] == 1? "在线":"离线"]);
+		}else{
+			foreach ($res as $value) {
+				foreach ($value as $v) {
+					Db::table('equipment')->where('e_sn',$v['sn'])->update(['e_statet'=>$v['online'] == 1? "在线":"离线"]);
+				}
+			}
+		}
+		//halt($res['data'][0]['online']);
 		$a = model('equipment')->paginate(10);
+		//halt($a);
 		$lists = $this->formlist();
+		//halt($lists);
         return view('public/lists',['a'=>$a,'lists'=>$lists]);
 	}
 }

@@ -136,6 +136,7 @@
 							<option value="textarea" {if $v['ftype']=='textarea'}selected{/if}>textarea</option>
 							<option value="img" {if $v['ftype']=='img'}selected{/if}>img</option>
 							<option value="tinymce" {if $v['ftype']=='tinymce'}selected{/if}>tinymce</option>
+							<option value="date" {if $v['ftype']=='date'}selected{/if}>date</option>
 						</select>
 					</div>
 					<div style="width:15%"><input type="text" name="form[value][]" value="{$v.value ?? ''}" placeholder="value"></div>
@@ -175,6 +176,7 @@
 						<option value="textarea">textarea</option>
 						<option value="img">img</option>
 						<option value="tinymce">tinymce</option>
+						<option value="date">date</option>
 					</select>
 				</div>
 				<div style="width:15%"><input type="text" name="form[value][]" placeholder="value"></div>

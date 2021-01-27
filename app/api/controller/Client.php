@@ -3,6 +3,8 @@ namespace app\api\controller;
 use think\Cache;
 use think\Controller;
 use think\Session;
+require __DIR__ .'/vendor/autoload.php';
+use Twilio\Rest\Client; 
 
 class Client extends Common
 {
@@ -16,17 +18,19 @@ class Client extends Common
     {
         /***********  获取参数  ***********/
         $data =input();
+        $to = $data['inputUserName'];
+        halt($data)
         /*********** 查询数据库   ***********/
 //    $token=$this->check_token($data['token']);
 //        $this->return_msg(200, '验证码发送成功！',$token);
 
 
-        $db_res = db('client_user')
+        /*$db_res = db('client_user')
             ->field('user_phone')
             ->where('user_phone', $data['user_phone'])
-            ->find();
+            ->find();*/
         /***********  判断用户是否已经注册 ***********/
-        if (!$db_res['user_phone']) {
+        /*if (!$db_res['user_phone']) {
 
 
             if($data['type']==0){
@@ -56,7 +60,24 @@ class Client extends Common
                 Cache::set($db_res['user_phone'], $tree, 3600);
             }
         }
-        $this->return_msg(200, '验证码发送成功！', $tree);
+        $this->return_msg(200, '验证码发送成功！', $tree);*/
+        $account_sid    = "AC9c11d0af67a64d881203a63be2aade7b"; 
+        $auth_token  = "c06c9f66d7b0212807f0793aeeb255e9"; 
+
+        $twilio_number = "+15005550006";
+
+
+        $client = new Client($account_sid, $auth_token);
+        $code = rand(10000,99999);
+        $end = $client->messages->create(
+            // Where to send a text message (your cell phone?)
+            $to,
+            array(
+                'from' => '+15005550006',
+                'body' => $code
+            )
+        );
+        halt($end->body);
     }
 
     //随机生成昵称

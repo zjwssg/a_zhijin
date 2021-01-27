@@ -178,7 +178,7 @@ function object_to_array($obj) {
   return json_decode(json_encode($b,320),true);
 }
 
- // curl请求
+ /*// curl请求
 function http_request($url,$data = null,$header = null){
     $curl = curl_init();
     if(!empty($header)){
@@ -198,7 +198,7 @@ function http_request($url,$data = null,$header = null){
     $output = curl_exec($curl);
     curl_close($curl);
     return $output;
-}
+}*/
 // 数组 转 对象
 function array_to_object($arr) {
   return json_decode(json_encode($a,320));

@@ -14,18 +14,18 @@ class Coupon extends Common
     {
 
 
-        $where['c_available_num'] = ['>',0];
+        //$where['c_available_num'] = ['>',0];
         /***********  获取参数  ***********/
         $data = input();
         $db_res = db('coupon')
             ->where(['c_with_sn'=>$data['c_with_sn']])
-            ->where($where)
+            ->where($data['c_available_num'] > 0)
             ->select();
 
-         foreach ($db_res as $key => &$val){
-             $user_coupon_num = db('user_coupon')->where(['c_id'=>$val['id'],'u_id'=>$data['user_id']])->count();
+        foreach ($db_res as $key => &$val){
+             $user_coupon_num = db('user_coupon')->where(['c_id'=>$val['id'],'u_id'=>$data['user_id']])->select();
 //             $user_coupon_num=5;
-             if($user_coupon_num >=5){
+             if($user_coupon_num){
 //                 var_dump(2);
                  $val['c_status']=2; //已经领取
              }else{
@@ -38,6 +38,7 @@ class Coupon extends Common
         if($db_res){
             //如果添加成功，提示添加成功。success也可以定义跳转链接，success('添加图片成功！','这里写人跳转的url')
             $this->return_msg(200, 'info',$db_res);
+
         }else{
             $this->return_msg(400, '暂无数据');
         }

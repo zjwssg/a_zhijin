@@ -153,18 +153,34 @@ class Equipment extends Controller
     	$res = $this->send_get('https://mqtt.ibeelink.com/api/ext/tissue/sn-exchange/topic', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
+
     //3.3.08 获取批量设备信息接口 //发布消息的目的地	GET
     // 	snList 	设备sn码(数组)
     // 	nonoceStr	参数随机码
     public function facility_message_port(){
     	//接受app get传过来的参数
     	$data = input();
+        //halt($data);
     	//处理
     	$post_data = array( 'data' => $data );
     	//调用Common.php函数
-    	$res = $this->send_get('https://mqtt.ibeelink.com/api/ext/tissue/devices/info', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
+    	$res = $this->send_get('https://en-iot.ibeelink.com/api/ext/tissue/devices/info', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
     	return $res;
     }
+    //3.3.08 获取批量设备信息接口 //发布消息的目的地  GET
+    //  snList  设备sn码(数组)
+    //  nonoceStr   参数随机码
+    public function facility_message_ports($data){
+        //接受app get传过来的参数
+        //$data = $data['data'];
+        
+        //处理
+        $post_data = array( 'data' => $data );
+        //调用Common.php函数
+        $res = $this->send_get('https://en-iot.ibeelink.com/api/ext/tissue/devices/info', $post_data, md5($data.'0907b9450D3Ff5b4da9631A474DfA26c'));
+        return $res;
+    }
+
     //3.3.09 品牌商获取监听项列表		GET
     //	nonoceStr	参数随机码
     public function brand_get_monitor(){
@@ -183,7 +199,7 @@ class Equipment extends Controller
     //	ruleList	监听项，从3.3.9获取需要的项
     public function brand_get_monitor_callback(){
         $data = '{
-            "notify":"http://www.zhijin.com:8080/api/equipment/data",
+            "notify":"http://www.zhijin.com:8080/api/equipment/brand_get_monitor",
             "nonceStr":"1564165",
             "ruleList":["c-state","c-cmd","a-MOTOR","a-Nothing","lng"]
         }';
