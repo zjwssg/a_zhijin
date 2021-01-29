@@ -12,6 +12,7 @@ class Upload extends Common
 
             //讲传入的图片写入到test_images表中，使用Thinkphp5自定义的函数insert()
             $add=db('client_user')->where(['user_id'=>$data['user_id']])->update(['user_icon'=>$data['user_icon']]);
+            return $add;
             if($add){
                 //如果添加成功，提示添加成功。success也可以定义跳转链接，success('添加图片成功！','这里写人跳转的url')
                 $this->return_msg(200, '修改图片成功！',$data['user_icon']);
@@ -25,7 +26,19 @@ class Upload extends Common
 
     function upload()
     {
-        $img='user_icon';
+        if(!empty($_FILES['file'])){
+            //获取扩展名
+            $exename  = $this->getExeName($_FILES['file']['name']);
+            if($exename != 'png' && $exename != 'jpg' && $exename != 'gif'){
+                exit('不允许的扩展名');
+            }
+            $path = 'static/img/'
+            $imageSavePath = uniqid().'.'.$exename;
+            if(move_uploaded_file($_FILES['file']['tmp_name'], $path.$imageSavePath)){
+                return $imageSavePath;
+            }
+        }
+        /*$img='user_icon';
         if($_FILES[$img]['type']=="image/png" || $_FILES[$img]['type']=="image/jpeg" || $_FILES[$img]['type']=="image/gif" || $_FILES[$img]['type']=="image/jpg" || $_FILES[$img]['type']=="image/bmp"){
             // 获取表单上传文件 例如上传了001.jpg
             $file = request()->file($img);
@@ -40,6 +53,10 @@ class Upload extends Common
             }
         }else{
             $this->error('文件类型不是图片');
-        }
+        }*/
+    }
+    public function getExeName($fileName){
+        $pathinfo      = pathinfo($fileName);
+        return strtolower($pathinfo['extension']);
     }
 }

@@ -73,7 +73,7 @@ class Common extends Controller
     /*********** 验证参数 ***********/
     // 这样是不能检测上传图像的文件的，需要写成下面的格式
     // $this->params = $this->check_params($this->request->except(['time', 'token']));
-    $this->params = $this->check_params($this->request->param(true));
+    //$this->params = $this->check_params($this->request->param(true));
   }
   /**
    * 验证时间戳是否超时
@@ -139,18 +139,18 @@ class Common extends Controller
    * @param array $arr 除time和token外的所有参数
    * @return void
    */
-  public function check_params($arr)
-  {
-    /*********** 获取参数的验证规则 ***********/
-    $rule = $this->rules[$this->request->controller()][$this->request->action()];
-    /*********** 验证参数并返回错误 ***********/
-    $this->validater = new Validate($rule);
-    if (!$this->validater->check($arr)) {
-      $this->return_msg(400, $this->validater->getError());
-    }
-    /*********** 如果正常，通过验证 ***********/
-    return $arr;
-  }
+  // public function check_params($arr)
+  // {
+  //   /*********** 获取参数的验证规则 ***********/
+  //   $rule = $this->rules[$this->request->controller()][$this->request->action()];
+  //   /*********** 验证参数并返回错误 ***********/
+  //   $this->validater = new Validate($rule);
+  //   if (!$this->validater->check($arr)) {
+  //     $this->return_msg(400, $this->validater->getError());
+  //   }
+  //   /*********** 如果正常，通过验证 ***********/
+  //   return $arr;
+  // }
   /**
    * 检测用户名并返回用户名类别
    * @param string $username 用户名，可能是邮箱，也可能是手机号
