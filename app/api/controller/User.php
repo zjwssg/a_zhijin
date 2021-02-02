@@ -98,4 +98,50 @@ class User extends Common
         }
     }
 
+    /**
+     * 领取纸巾限制
+     * @return json API返回的json数据info
+     */
+    public function tissue_restrict()
+    {
+        /***********  获取参数  ***********/
+        $data = input();
+        $db_res = db('client_user')->where('id',$data['user_id'])->select();
+
+        if($db_res[0]['get_zhijin'] == 0){
+
+            $this->return_msg(200, '未领取');
+        }else if($db_res[0]['get_zhijin'] == 1){
+            $this->return_msg(202, '已领取');
+        }
+    }
+
+    /**
+     * 修改纸巾状态
+     * @return json API返回的json数据info
+     */
+    public function get_states()
+    {
+        /***********  获取参数  ***********/
+        $data = input();
+        $db_res = db('client_user')->where('user_id',$data['user_id'])->select();
+
+        if($db_res[0]['get_zhijin'] == 0){
+
+            $aa = db('client_user')->where('user_id',$data['user_id'])->update(['get_zhijin' => 1]);
+
+            $e_num = db('equipment')->where('e_sn',$data['sn'])->select();
+            $e_nums = $e_num[0]['e_znum'];
+            if($e_nums >= 100){
+                $this->return_msg(301, '今日纸巾已领完');
+            }
+            $num = db('equipment')->where('e_sn',$data['sn'])->update(['e_znum' => $e_nums + 1]);
+
+            $this->return_msg(200, '修改成功');
+
+        }else if($db_res[0]['get_zhijin'] == 1){
+            $this->return_msg(202, '已领取');
+        }
+    }
+
 }

@@ -33,13 +33,13 @@ class Common extends Controller
         'user_nickname' => 'require'
       ),
       'update_user_phone' => array(
-//        'user_id' => 'require|number',
-//          'user_code' => 'require|number|length:6'
+      //        'user_id' => 'require|number',
+      //          'user_code' => 'require|number|length:6'
       ),
         'follow_shop' => array(
-//        'user_id' => 'require|number',
-//          'user_code' => 'require|number|length:6'
-        ),
+      //        'user_id' => 'require|number',
+      //          'user_code' => 'require|number|length:6'
+      ),
 
     ),
     'Upload' => array(
