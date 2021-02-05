@@ -9,11 +9,16 @@ class Upload extends Common
         //判断是否是post 方法提交的
         if(request()->isPost()){
             $data=input('post.');
-
+            //return $data['user_icon'];
+            if($data['user_icon'] == "不允许的扩展名"){
+                $this->return_msg(203, '不允许的扩展名');
+            }
+            //return $data;
             //讲传入的图片写入到test_images表中，使用Thinkphp5自定义的函数insert()
             $add=db('client_user')->where(['user_id'=>$data['user_id']])->update(['user_icon'=>$data['user_icon']]);
-            return $add;
+
             if($add){
+                //return $data;
                 //如果添加成功，提示添加成功。success也可以定义跳转链接，success('添加图片成功！','这里写人跳转的url')
                 $this->return_msg(200, '修改图片成功！',$data['user_icon']);
             }else{
@@ -21,7 +26,7 @@ class Upload extends Common
             }
             return;
         }
-//        return view();
+        //        return view();
     }
 
     function upload()

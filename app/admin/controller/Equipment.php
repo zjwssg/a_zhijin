@@ -105,10 +105,10 @@ class Equipment extends Base
 		if(count($res['data']) == 1){
 			Db::table('equipment')->where('e_sn',$res['data'][0]['sn'])->update(['e_statet'=>$res['data'][0]['online'] == 1? "在线":"离线"]);
 		}else{
-			foreach ($res as $value) {
-				foreach ($value as $v) {
-					Db::table('equipment')->where('e_sn',$v['sn'])->update(['e_statet'=>$v['online'] == 1? "在线":"离线"]);
-				}
+			foreach ($res['data'] as $value) {
+				//halt($value);
+				Db::table('equipment')->where('e_sn',$value['sn'])->update(['e_statet'=>$value['online'] == 1? "在线":"离线"]);
+				
 			}
 		}
 		//halt($res['data'][0]['online']);

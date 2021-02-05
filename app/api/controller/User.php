@@ -98,6 +98,36 @@ class User extends Common
         }
     }
 
+     /**
+         * 获取店铺是否关注
+     * @return json API返回的json数据
+     */
+    public function get_shop_is_attention()
+    {
+        /***********  获取参数  ***********/
+        $data = input();
+        $datas = [
+            'shop_id' => $data['shop_id'],
+            'user_id' => $data['user_id'],
+        ];
+        $datass = [
+            'shop_id' => $data['shop_id'],
+            'user_id' => $data['user_id'],
+            'states' => 0,
+        ];
+        $id = db('attention')->where(['shop_id'=>$data['shop_id'],'user_id'=>$data['user_id']])->select();
+        if(empty($id)){
+            $datass_id = db('attention')->insertGetId($datass);
+            $id = $id = db('attention')->where(['id'=>$datass_id])->select();
+        }
+
+        if($id){
+            //如果添加成功，提示添加成功。success也可以定义跳转链接，success('添加图片成功！','这里写人跳转的url')
+            $this->return_msg(200, 'info',$id);
+        }else{
+            $this->return_msg(400, '暂无数据');
+        }
+    }
     /**
      * 领取纸巾限制
      * @return json API返回的json数据info
@@ -106,8 +136,8 @@ class User extends Common
     {
         /***********  获取参数  ***********/
         $data = input();
-        $db_res = db('client_user')->where('id',$data['user_id'])->select();
-
+        $db_res = db('client_user')->where('user_id',$data['user_id'])->select();
+        halt($db_res);
         if($db_res[0]['get_zhijin'] == 0){
 
             $this->return_msg(200, '未领取');
@@ -145,3 +175,5 @@ class User extends Common
     }
 
 }
+// create event `myevent1` on schedule every 10 second do update cilent_user set get_zhijin = 0;
+// create event 'get_clear' on schedule every 1 day do update cilent_user set get_zhijin = 0; 

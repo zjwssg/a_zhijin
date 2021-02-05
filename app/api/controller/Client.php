@@ -16,23 +16,23 @@ class Client extends Common
      */
     public function getverificationcode()
     {
-        /***********  获取参数  ***********/
-        $data =input();
+        /***********  获取参数  ***********/ //Twilio
+        /*$data =input();
         $to = $data['user_phone'];
         //halt($to);
         $account_sid    = "AC9c11d0af67a64d881203a63be2aade7b"; 
         $auth_token  = "c06c9f66d7b0212807f0793aeeb255e9"; 
 
-        $twilio_number = "+15005550006";
+        //$twilio_number = "+15005550006";
 
 
         $client = new note($account_sid, $auth_token);
         $code = rand(100000,999999);
         $end = $client->messages->create(
             // Where to send a text message (your cell phone?)
-            "+86".$to,
+            "+60".$to,
             array(
-                'from' => '+15005550006',
+                'from' => '+1 920 781 1119',
                 'body' => $code
             )
         );
@@ -41,9 +41,42 @@ class Client extends Common
             return json(['code'=>200,'msg'=>'返回验证码成功'，'data'=>$end->body]);
         }else{
             return json(['code'=>400,'msg'=>'返回验证码失败'])
+        }*/
+        $data = input();
+        //halt($data);
+        $user_phone = $data['user_phone'];
+        $code = rand(100000,999999);
+        $sessage = 'RM0%20Giver%20'.$code;
+        //halt($sessage);
+        $durl = "http://ezsms2u.com/websmsapi/ISendSMS.aspx?username=giver&password=123456&message=".$sessage."&mobile=".$data['user_phone']."&sender=Test&type=1";
+        //$durl = "http://ezsms2u.com/websmsapi/ISendSMS.aspx?username=giver&password=123456&message=RM0%20Giver%20HiRichard&mobile=601110673396&sender=Test&type=1"
+        
+        $res = $this->curl_file_get_contents($durl);
+        if($res){
+            return json(['code'=>200,'msg'=>'返回验证码成功','data'=>$sessage]);
+        }else{
+            return json(['code'=>400,'msg'=>'返回验证码失败']);
         }
         
     }
+    //访问url
+    function curl_file_get_contents($durl){  
+
+        $ch = curl_init();  
+
+        curl_setopt($ch, CURLOPT_URL, $durl);  
+
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, true) ; // 获取数据返回    
+
+        curl_setopt($ch, CURLOPT_BINARYTRANSFER, true) ; // 在启用 CURLOPT_RETURNTRANSFER 时候将获取数据返回    
+
+        $data = curl_exec($ch);  
+
+        curl_close($ch);  
+
+        return $data;  
+
+    } 
 
     //随机生成昵称
     function generate_password( $length = 8 ) {
